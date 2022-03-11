@@ -47,7 +47,6 @@ def affine_encrypt(text, key):
     '''
 
     return ''.join([ chr((( key[0]*(ord(t) - ord('\x00')) + key[1] ) % 65536) 
-
                   + ord('\x00')) for t in text ])
  
  
