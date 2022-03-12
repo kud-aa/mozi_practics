@@ -37,51 +37,49 @@ def modinv(a, m):
 def recursive_encrypt(text, alpha, beta):
 
     out = []
-    for t in text:
-        i = text.index(t)
+    for i in range(len(text)):
         if (i > 1):
             alpha[2] = (alpha[0] * alpha[1]) % 65536
             beta[2] = (beta[0] + beta[1]) % 65536
         else:
-            if (i == 0):
-                alpha[2] = alpha[0]
-                beta[2] = beta[0]
-            else:
-                alpha[2] = alpha[1]
-                beta[2] = beta[1]
+            alpha[2] = alpha[1]
+            beta[2] = beta[1]
 
         alpha[0] = alpha[1]
         alpha[1] = alpha[2]
         beta[0] = beta[1]
         beta[1] = beta[2]
 
-        out.append(chr((alpha[2]*ord(t) + beta[2]) % 65536))
+        #print("T: {0} | Symbol: {1:^3} | A: {2:5d} | B = {3:5d} | i = {4}".format(text[i], (chr((alpha[2]*ord(text[i]) + beta[2]) % 65536)), alpha[2], beta[2], i))
+        out.append(chr(((alpha[2]*(ord(text[i]) - ord('\x00')) + beta[2])
+                        % 65536) + ord('\x00')))
     return "".join(out)
+
+    #return ''.join([ chr((( key[0]*(ord(t) - ord('\x00')) + key[1] ) % 65536) 
+    #                     + ord('\x00')) for t in text ])
 
 def recursive_decrypt (cipher, alpha, beta):
 
     out = []
-    for c in cipher:
-        i = cipher.index(c)
+    for i in range(len(cipher)):
         if (i > 1):
             alpha[2] = (alpha[0] * alpha[1]) % 65536
             beta[2] = (beta[0] + beta[1]) % 65536
         else:
-            if (i == 0):
-                alpha[2] = alpha[0]
-                beta[2] = beta[0]
-            else:
-                alpha[2] = alpha[1]
-                beta[2] = beta[1]
+            alpha[2] = alpha[1]
+            beta[2] = beta[1]
 
         alpha[0] = alpha[1]
         alpha[1] = alpha[2]
         beta[0] = beta[1]
         beta[1] = beta[2]
 
-        out.append(chr(( modinv(alpha[2], 65536)*(ord(c) - beta[2])) % 65536))
+        out.append(chr((( modinv(alpha[2], 65536)*(ord(cipher[i]) - ord('\x00') - beta[2]))
+                        % 65536) + ord('\x00')))
 
     return "".join(out)
+    #return ''.join([ chr((( modinv(key[0], 65536)*(ord(c) - ord('\x00') - key[1])) 
+    #                      % 65536) + ord('\x00')) for c in cipher ])
 
 # Driver Code to test the above functions
 
@@ -92,15 +90,18 @@ def main():
     #text = input("Введите текст: ")
     #a = int(input("введите a: "))
     #b = int(input("Введите b: "))
-    text = 'AFFINE CIPHER abcd !?! КИРИЛИЦА ريكرو $€£'
+    text = 'AFFINE CIPHER abcd !?! ИРИЛИЦА ريكرو $€£'
+    #text = 'КИРИЛИЦА ريكرو $€£'
     alpha = [7, 3, None]
     beta = [10, 8, None]
+    alpha1 = [7, 3, None]
+    beta1 = [10, 8, None]
 
     # calling recursive encryption function
     recursive_encrypted_text = recursive_encrypt(text, alpha, beta)
     print('Recursive encrypted text: {}'.format( recursive_encrypted_text ))
-    #print('Recursive decrypted Text: {}'.format
-    #      ( recursive_decrypt(recursive_encrypted_text, alpha, beta) ))
+    print('Recursive decrypted Text: {}'.format
+          ( recursive_decrypt(recursive_encrypted_text, alpha1, beta1) ))
 
 if __name__ == '__main__':
 
