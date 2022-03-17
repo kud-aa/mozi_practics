@@ -56,7 +56,8 @@ def affine_decrypt(cipher, key):
 def main():
 
     # declaring text and key
-    text = 'AFFINE CIPHER abcd !?! КИРИЛИЦА ريكرو $€£'
+    #text = 'AFFINE CIPHER abcd !?! КИРИЛИЦА ريكرو $€£'
+    text = 'nigger sus'
     a, b = 17, 20
 
     #text = input("Введите текст: ")
