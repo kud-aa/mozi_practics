@@ -1,76 +1,66 @@
-# Implementation of Affine Cipher in Python
- 
-# Extended Euclidean Algorithm for finding modular inverse
-# eg: modinv(7, 65536) = 15
+# Implementation of Recursive Affine Cipher in Python
 # number of symbols in UTF-16 is 65536
-# first symbol is \x00
+# first symbol in unicode is \x00
 
-def egcd(a, b):
+from cryptomath import egcd, modinv
 
-    x,y, u,v = 0,1, 1,0
+# recursive affine cipher encryption function 
+# returns the cipher text
+def recursive_encrypt(text, alpha1, alpha2, beta1, beta2, power, first_symbol):
 
-    while a != 0:
+    '''
 
-        q, r = b//a, b%a
+    y_i = (a_i*x_i + b_i) % power
 
-        m, n = x-u*q, y-v*q
+    '''
 
-        b,a, x,y, u,v = a,r, u,v, m,n
-
-    gcd = b
-
-    return gcd, x, y
- 
-
-def modinv(a, m):
-
-    gcd, x, y = egcd(a, m)
-
-    if gcd != 1:
-
-        return None  # modular inverse does not exist
-
-    else:
-
-        return x % m
- 
-def recursive_encrypt(text, alpha1, alpha2, beta1, beta2):
     out = ''
     for t in text:
-        out += chr((( alpha1*(ord(t) - ord('\x00')) + beta1 ) % 65536) + ord('\x00'))
-        alpha1, alpha2 = alpha2, (alpha1 * alpha2) % 65536
-        beta1, beta2 = beta2, (beta1 + beta2) % 65536
+        out += chr((( alpha1*(ord(t) - ord(first_symbol)) + beta1 ) % power) + ord(first_symbol))
+        alpha1, alpha2 = alpha2, (alpha1 * alpha2) % power
+        beta1, beta2 = beta2, (beta1 + beta2) % power
     return out
 
-def recursive_decrypt (cipher, alpha1, alpha2, beta1, beta2):
+# recursive affine cipher decryption function 
+# returns original text
+def recursive_decrypt(cipher, alpha1, alpha2, beta1, beta2, power, first_symbol):
+
+    '''
+
+    x_i = ((a_i)^-1*(y_i - b_i)) % power
+
+    '''
+
     out = ''
     for c in cipher:
-        out += chr((( modinv(alpha1, 65536)*(ord(c) - ord('\x00') - beta1 )) % 65536) + ord('\x00'))
-        alpha1, alpha2 = alpha2, (alpha1 * alpha2) % 65536
-        beta1, beta2 = beta2, (beta1 + beta2) % 65536
+        out += chr((( modinv(alpha1, power)*(ord(c) - ord(first_symbol) - beta1 )) % power) + ord(first_symbol))
+        alpha1, alpha2 = alpha2, (alpha1 * alpha2) % power
+        beta1, beta2 = beta2, (beta1 + beta2) % power
     return out
 
 # Driver Code to test the above functions
 def main():
 
-    # declaring text and key
+    # declaring text and alphas & betas
+    text = 'AFFINE RECURSIVE CIPHER abcd !?! KИРИЛЛИЦА ريكرو $€£'
+    alpha1 = 7
+    alpha2 = 11
+    beta1  = 10
+    beta2  = 13
 
     #text = input("Введите текст: ")
-    #a = int(input("введите a: "))
-    #b = int(input("Введите b: "))
-    text = 'AFFINE CIPHER abcd !?! KИРИЛЛИЦА ريكرو $€£'
-    #text = 'КИРИЛИЦА ريكرو $€£'
-    alpha1 = 7
-    alpha2 = 3
-    beta1 = 10
-    beta2 = 8
+    #alpha1 = int(input("Введите alpha1: "))
+    #alpha2 = int(input("Введите alpha2: "))
+    #beta1  = int(input("Введите beta1 : "))
+    #beta2  = int(input("Введите beta2 : "))
 
     # calling recursive encryption function
-    recursive_encrypted_text = recursive_encrypt(text, alpha1, alpha2, beta1, beta2).encode('utf-8', 'replace').decode()
+    recursive_encrypted_text = recursive_encrypt(text, alpha1, alpha2, beta1, beta2, 65536, '\x00').encode('utf-8', 'replace').decode()
     print('Recursive encrypted text: {}'.format( recursive_encrypted_text ))
+
+    ## calling recursive decryption function
     print('Recursive decrypted Text: {}'.format
-          ( recursive_decrypt(recursive_encrypted_text, alpha1, alpha2, beta1, beta2)))
+          ( recursive_decrypt(recursive_encrypted_text, alpha1, alpha2, beta1, beta2, 65536, '\x00')))
 
 if __name__ == '__main__':
-
     main()
