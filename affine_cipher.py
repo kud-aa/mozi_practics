@@ -36,26 +36,38 @@ def affine_decrypt(cipher, key, power, first_symbol):
 def main():
 
     # declaring text and key
-    text = open("input.txt").read()
     #text = 'AFFINE CIPHER abcd !?! КИРИЛИЦА ريكرو $€£'
-    a, b = 17, 20
+    #a, b = 17, 20
 
-    #text = input("Введите текст: ")
-    #a = int(input("введите a: "))
-    #b = int(input("Введите b: "))
+    menu = input("Choose text format [-f] for file or [-s] string ")
+    if (menu == "s"):
+        text = input("Type text: ")
+    elif (menu == "f"):
+        text = open("input.txt").read()
+    else:
+        print("Wrong option choose [-f] or [-s]")
+        quit()
+
+    a = int(input("Type A: "))
+    b = int(input("Type B: "))
+
     key = [a, b]
+    affine_encrypted_text = affine_encrypt((re.sub('[^a-zA-Z]+', '', text)).upper(), key, 26, 'A')
 
     # calling encryption function
-    affine_encrypted_text = affine_encrypt(re.sub('[^a-zA-Z]+', '', text), key, 26, 'A')
-    #print('Encrypted Text: {}'.format( affine_encrypted_text ))
-    with open('enc_out.txt', 'w') as f:
-        print(affine_encrypted_text, file=f)
+    if (menu == "s"):
+        print('Encrypted Text: {}'.format( affine_encrypted_text ))
+    elif (menu == "f"):
+        with open('enc_out.txt', 'w') as f:
+            print(affine_encrypted_text, file=f)
 
     # calling decryption function
-    #print('Decrypted Text: {}'.format
-    #      ( affine_decrypt(affine_encrypted_text, key, 65536, '\x00') ))
-    #with open('dec_out.txt', 'w') as f:
-    #    print(affine_decrypt(affine_encrypted_text, key, 65536, '\x00'), file=f)
+    if (menu == "s"):
+        print('Decrypted Text: {}'.format
+              ( affine_decrypt(affine_encrypted_text, key, 26, 'A') ))
+    elif (menu == "f"):
+        with open('dec_out.txt', 'w') as f:
+            print(affine_decrypt(affine_encrypted_text, key, 26, 'A'), file=f)
 
 if __name__ == '__main__':
     main()
