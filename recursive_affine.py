@@ -1,7 +1,10 @@
 # Implementation of Recursive Affine Cipher in Python
+
 # number of symbols in UTF-16 is 65536
 # first symbol in unicode is \x00
 
+import argparse
+import re
 from cryptomath import egcd, modinv
 
 # recursive affine cipher encryption function 
@@ -41,26 +44,48 @@ def recursive_decrypt(cipher, alpha1, alpha2, beta1, beta2, power, first_symbol)
 # Driver Code to test the above functions
 def main():
 
+    parser=argparse.ArgumentParser(description="Recursive Affine Cipher")
+    parser.add_argument('-i','--input',
+                        help="For input paste string or path for the file"
+                        "",required=True)
+    parser.add_argument('-a1', '--alpha1',
+                        help="Int A1. A1&B1 should be relatively prime numbers"
+                        "",required=True, type=int)
+    parser.add_argument('-a2', '--alpha2',
+                        help="Int A2. A2&B2 should be relatively prime numbers"
+                        "",required=True, type=int)
+    parser.add_argument('-b1', '--beta1',
+                        help="Int B1. A1&B1 should be relatively prime numbers"
+                        "",required=True, type=int)
+    parser.add_argument('-b2', '--beta2',
+                        help="Int B2. A2&B2 should be relatively prime numbers"
+                        "",required=True, type=int)
+    args = parser.parse_args()
+
+
     # declaring text and alphas & betas
-    text = 'AFFINE RECURSIVE CIPHER abcd !?! KИРИЛЛИЦА ريكرو $€£'
-    alpha1 = 7
-    alpha2 = 11
-    beta1  = 10
-    beta2  = 13
+    alpha1 = args.alpha1
+    alpha2 = args.alpha2
+    beta1  = args.beta1
+    beta2  = args.beta2
 
-    #text = input("Введите текст: ")
-    #alpha1 = int(input("Введите alpha1: "))
-    #alpha2 = int(input("Введите alpha2: "))
-    #beta1  = int(input("Введите beta1 : "))
-    #beta2  = int(input("Введите beta2 : "))
+    try:
+        with open(args.input) as file:
+            text = file.read()
+            recursive_encrypted_text = recursive_encrypt((re.sub('[^a-zA-Z]+', '', text)).upper(), alpha1, alpha2, beta1, beta2, 26, 'A').encode('utf-8', 'replace').decode()
+            with open('rec_enc_out.txt', 'w') as f:
+                print(recursive_encrypted_text, file=f)
+                print("Encrypted text in rec_enc_out.txt file")
+            with open('rec_dec_out.txt', 'w') as f:
+                print(recursive_decrypt(recursive_encrypted_text, alpha1, alpha2, beta1, beta2, 26, 'A'), file=f)
+                print("Decrypted ciphertext in rec_dec_out.txt file")
+    except:
+        text = args.input
+        recursive_encrypted_text = recursive_encrypt(text, alpha1, alpha2, beta1, beta2, 65536, '\x00').encode('utf-8', 'replace').decode()
+        print('Recursive encrypted text: {}'.format( recursive_encrypted_text ))
 
-    # calling recursive encryption function
-    recursive_encrypted_text = recursive_encrypt(text, alpha1, alpha2, beta1, beta2, 65536, '\x00').encode('utf-8', 'replace').decode()
-    print('Recursive encrypted text: {}'.format( recursive_encrypted_text ))
-
-    ## calling recursive decryption function
-    print('Recursive decrypted Text: {}'.format
-          ( recursive_decrypt(recursive_encrypted_text, alpha1, alpha2, beta1, beta2, 65536, '\x00')))
+        print('Recursive decrypted Text: {}'.format
+              ( recursive_decrypt(recursive_encrypted_text, alpha1, alpha2, beta1, beta2, 65536, '\x00')))
 
 if __name__ == '__main__':
     main()

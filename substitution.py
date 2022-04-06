@@ -1,3 +1,6 @@
+# Implementation of Substitution Cipher in Python
+
+import argparse
 import random
 import re
 
@@ -18,32 +21,30 @@ def decrypt(cipher, key, alphabet):
 
 def main():
 
-    menu = input("Choose text format [-f] for file or [-s] string ")
-    if (menu == "s"):
-        text = input("Type text: ")
-    elif (menu == "f"):
-        text = open("input.txt").read()
-    else:
-        print("Wrong option choose [-f] or [-s]")
-        quit()
+    parser=argparse.ArgumentParser(description="Substitution Cipher")
+    parser.add_argument('-i','--input',
+                        help="For input paste string or path for the file"
+                        "",required=True)
+    args = parser.parse_args()
 
     key = makeKey(alphabet)
-    print(key)
-    #text = 'AFFINE RECURSIVE CIPHER abcd !?! KИРИЛЛИЦА ريكرو $€£'
+    print("Used key: {}".format(key))
 
-    cipher = encrypt((re.sub('[^a-zA-Z]+', '', text)).upper(), key, alphabet)
-
-    if (menu == "s"):
-        print("Ciphertext: {}".format(cipher.encode('utf-8', 'replace').decode()))
-    elif (menu == "f"):
-        with open('enc_out.txt', 'w') as f:
-            print(cipher.encode('utf-8', 'replace').decode(), file=f)
-
-    if (menu == "s"):
-        print("Расшифрованный текст: {}".format(decrypt(cipher, key, alphabet)))
-    elif (menu == "f"):
-        with open('dec_out.txt', 'w') as f:
-            print(decrypt(cipher, key, alphabet), file=f)
+    try:
+        with open(args.input) as file:
+            text = file.read()
+            cipher = encrypt((re.sub('[^a-zA-Z]+', '', text)).upper(), key, alphabet)
+            with open('sub_enc_out.txt', 'w') as f:
+                print(cipher.encode('utf-8', 'replace').decode(), file=f)
+                print("Encrypted text in sub_enc_out.txt file")
+            with open('sub_dec_out.txt', 'w') as f:
+                print(decrypt(cipher, key, alphabet), file=f)
+                print("Decrypted ciphertext in sub_dec_out.txt file")
+    except:
+        text = args.input
+        cipher = encrypt((re.sub('[^a-zA-Z]+', '', text)).upper(), key, alphabet)
+        print("Encrypted text: {}".format(cipher.encode('utf-8', 'replace').decode()))
+        print("Decrypted ciphertext: {}".format(decrypt(cipher, key, alphabet)))
 
 if __name__ == '__main__':
     main()

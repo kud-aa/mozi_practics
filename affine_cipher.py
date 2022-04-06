@@ -1,7 +1,9 @@
 # Implementation of Affine Cipher in Python
+
 # number of symbols in UTF-16 is 65536
 # first symbol in unicode is \x00
 # re - regular expression
+import argparse
 import re
 from cryptomath import egcd, modinv
 
@@ -35,39 +37,38 @@ def affine_decrypt(cipher, key, power, first_symbol):
 # Driver Code to test the above functions
 def main():
 
-    # declaring text and key
-    #text = 'AFFINE CIPHER abcd !?! КИРИЛИЦА ريكرو $€£'
-    #a, b = 17, 20
+    parser=argparse.ArgumentParser(description="Affine Cipher")
+    parser.add_argument('-i','--input',
+                        help="For input paste string or path for the file"
+                        "",required=True)
+    parser.add_argument('-a', '--alpha',
+                        help="Int A. A&B should be relatively prime numbers"
+                        "",required=True, type=int)
+    parser.add_argument('-b', '--beta',
+                        help="Int B. A&B should be relatively prime numbers"
+                        "",required=True, type=int)
+    args = parser.parse_args()
 
-    menu = input("Choose text format [-f] for file or [-s] string ")
-    if (menu == "s"):
-        text = input("Type text: ")
-    elif (menu == "f"):
-        text = open("input.txt").read()
-    else:
-        print("Wrong option choose [-f] or [-s]")
-        quit()
-
-    a = int(input("Type A: "))
-    b = int(input("Type B: "))
-
+    a = args.alpha
+    b = args.beta
     key = [a, b]
-    affine_encrypted_text = affine_encrypt((re.sub('[^a-zA-Z]+', '', text)).upper(), key, 26, 'A')
 
-    # calling encryption function
-    if (menu == "s"):
+    try:
+        with open(args.input) as file:
+            text = file.read()
+            affine_encrypted_text = affine_encrypt((re.sub('[^a-zA-Z]+', '', text)).upper(), key, 26, 'A')
+            with open('aff_enc_out.txt', 'w') as f:
+                print(affine_encrypted_text, file=f)
+                print("Encrypted text in aff_enc_out.txt file")
+            with open('aff_dec_out.txt', 'w') as f:
+                print(affine_decrypt(affine_encrypted_text, key, 26, 'A'), file=f)
+                print("Decrypted ciphertext in aff_enc_out.txt file")
+    except:
+        text = args.input
+        affine_encrypted_text = affine_encrypt(text, key, 65536, '\x00')
         print('Encrypted Text: {}'.format( affine_encrypted_text ))
-    elif (menu == "f"):
-        with open('enc_out.txt', 'w') as f:
-            print(affine_encrypted_text, file=f)
-
-    # calling decryption function
-    if (menu == "s"):
         print('Decrypted Text: {}'.format
-              ( affine_decrypt(affine_encrypted_text, key, 26, 'A') ))
-    elif (menu == "f"):
-        with open('dec_out.txt', 'w') as f:
-            print(affine_decrypt(affine_encrypted_text, key, 26, 'A'), file=f)
+              ( affine_decrypt(affine_encrypted_text, key, 65536, '\x00') ))
 
 if __name__ == '__main__':
     main()
