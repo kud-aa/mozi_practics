@@ -4,7 +4,6 @@ import argparse
 import random
 import re
 
-alphabet = ''.join(chr(i) for i in range(65,91))
 
 def makeKey(alphabet):
     alphabet = list(alphabet)
@@ -27,22 +26,26 @@ def main():
                         "",required=True)
     args = parser.parse_args()
 
-    key = makeKey(alphabet)
-    print("Used key: {}".format(key))
-
     try:
         with open(args.input) as file:
             text = file.read()
+            alphabet = ''.join(chr(i) for i in range(65,91))
+            key = makeKey(alphabet)
+            print("Used key: {}".format(key))
+
             cipher = encrypt((re.sub('[^a-zA-Z]+', '', text)).upper(), key, alphabet)
             with open('sub_enc_out.txt', 'w') as f:
-                print(cipher.encode('utf-8', 'replace').decode(), file=f)
+                print(cipher, file=f)
                 print("Encrypted text in sub_enc_out.txt file")
             with open('sub_dec_out.txt', 'w') as f:
                 print(decrypt(cipher, key, alphabet), file=f)
                 print("Decrypted ciphertext in sub_dec_out.txt file")
     except:
         text = args.input
-        cipher = encrypt((re.sub('[^a-zA-Z]+', '', text)).upper(), key, alphabet)
+        alphabet = ''.join(chr(i) for i in range(65536))
+        key = makeKey(alphabet)
+
+        cipher = encrypt(text, key, alphabet)
         print("Encrypted text: {}".format(cipher.encode('utf-8', 'replace').decode()))
         print("Decrypted ciphertext: {}".format(decrypt(cipher, key, alphabet)))
 
