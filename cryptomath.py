@@ -1,6 +1,7 @@
 # Extended Euclidean Algorithm for finding modular inverse
 
-alphabet = """ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"""
+#alphabet = """ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"""
+alphabet = ''.join(chr(i) for i in range(32,127))
 
 def egcd(a, b):
 
