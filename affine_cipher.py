@@ -6,6 +6,7 @@
 import argparse
 import re
 from cryptomath import egcd, modinv
+from pathlib import Path
 
 # affine cipher encryption function 
 # returns the cipher text
@@ -58,12 +59,13 @@ def main():
             text = file.read()
             #affine_encrypted_text = affine_encrypt((re.sub('[^a-zA-Z]+', '', text)).upper(), key, 26, 'A')
             affine_encrypted_text = affine_encrypt(text, key, 95, ' ')
-            with open('aff_enc_out.txt', 'w') as f:
+            Path("output").mkdir(parents=True, exist_ok=True)
+            with open('output/aff_enc_out.txt', 'w') as f:
                 print(affine_encrypted_text, file=f)
-                print("Encrypted text in aff_enc_out.txt file")
-            with open('aff_dec_out.txt', 'w') as f:
+                print("Encrypted text in output/aff_enc_out.txt file")
+            with open('output/aff_dec_out.txt', 'w') as f:
                 print(affine_decrypt(affine_encrypted_text, key, 95, ' '), file=f)
-                print("Decrypted ciphertext in aff_dec_out.txt file")
+                print("Decrypted ciphertext in output/aff_dec_out.txt file")
     except:
         text = args.input
         affine_encrypted_text = affine_encrypt(text, key, 65536, '\x00')

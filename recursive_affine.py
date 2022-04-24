@@ -6,6 +6,7 @@
 import argparse
 import re
 from cryptomath import egcd, modinv
+from pathlib import Path
 
 # recursive affine cipher encryption function 
 # returns the cipher text
@@ -73,12 +74,13 @@ def main():
         with open(args.input) as file:
             text = file.read()
             recursive_encrypted_text = recursive_encrypt((re.sub('[^a-zA-Z]+', '', text)).upper(), alpha1, alpha2, beta1, beta2, 26, 'A').encode('utf-8', 'replace').decode()
-            with open('rec_enc_out.txt', 'w') as f:
+            Path("output").mkdir(parents=True, exist_ok=True)
+            with open('output/rec_enc_out.txt', 'w') as f:
                 print(recursive_encrypted_text, file=f)
-                print("Encrypted text in rec_enc_out.txt file")
-            with open('rec_dec_out.txt', 'w') as f:
+                print("Encrypted text in output/rec_enc_out.txt file")
+            with open('output/rec_dec_out.txt', 'w') as f:
                 print(recursive_decrypt(recursive_encrypted_text, alpha1, alpha2, beta1, beta2, 26, 'A'), file=f)
-                print("Decrypted ciphertext in rec_dec_out.txt file")
+                print("Decrypted ciphertext in output/rec_dec_out.txt file")
     except:
         text = args.input
         recursive_encrypted_text = recursive_encrypt(text, alpha1, alpha2, beta1, beta2, 65536, '\x00').encode('utf-8', 'replace').decode()

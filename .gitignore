@@ -2,3 +2,4 @@
 *.txt
 !dictionary.txt
 *__pycache__
+*output
