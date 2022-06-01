@@ -126,6 +126,7 @@ def main():
     args = parser.parse_args()
 
     alphabet = 'abcdefghijklmnopqrstuvwxyz ?.,;'
+    #alphabet = ' abcdefghijklmnopqrstuvwxyz?.,;'
     try:
         with open(args.input) as file:
             msg = re.sub('[^a-zA-Z]+', '', file.read()).lower()
@@ -141,19 +142,20 @@ def main():
                 print('Incomprehensible symbols. Use english alphabet only. Aborting.')
                 exit(1)
 
-            hill_encrypted_text = hill_encrypt(msg, key, alphabet)
+            hill_encrypted_text = hill_encrypt(msg, key, alphabet, ' ')
+            hill_decrypted_text = hill_decrypt(hill_encrypted_text, key, alphabet, ' ')
 
             Path("output").mkdir(parents=True, exist_ok=True)
             with open('output/hill_enc_out.txt', 'w') as f:
                 print(hill_encrypted_text, file=f)
                 print("Encrypted text in output/hill_enc_out.txt file")
             with open('output/hill_dec_out.txt', 'w') as f:
-                print(hill_decrypt(hill_encrypted_text, key, alphabet), file=f)
+                print(hill_decrypted_text, file=f)
                 print("Decrypted ciphertext in output/hill_dec_out.txt file")
 
     except:
-        msg = re.sub('[^a-zA-Z]+', '', args.input).lower()
-        key = re.sub('[^a-zA-Z]+', '', args.key).lower()
+        msg = args.input.lower()
+        key = args.key.lower()
 
         if len(key)**0.5 % 1 != 0:
             print('Key must be a perfect square. Aborting.')
@@ -166,9 +168,10 @@ def main():
             exit(1)
 
         hill_encrypted_text = hill_encrypt(msg, key, alphabet)
+        hill_decrypted_text = hill_decrypt(hill_encrypted_text, key, alphabet) 
+
         print('Encrypted Text: {}'.format( hill_encrypted_text ))
-        print('Decrypted Text: {}'.format
-              ( hill_decrypt(hill_encrypted_text, key, alphabet) ))
+        print('Decrypted Text: {}'.format( hill_decrypted_text ))
 
 
 if __name__ == '__main__':

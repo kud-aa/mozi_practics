@@ -26,7 +26,7 @@ def check_list(list_of_words):
 
 def check_word(str_to_check):
     dictionary_file = open('dictionary.txt', 'r')
-    dictionary = dictionary_file.read()
+    dictionary = dictionary_file.read().lower()
 
     to_delete = []
     for symbol in str_to_check:

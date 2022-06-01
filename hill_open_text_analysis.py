@@ -1,5 +1,5 @@
 from tracemalloc import start
-import numpy
+import numpy, argparse
 import sympy
 from hill import to_matrix
 from hill import to_number_sequence
@@ -70,13 +70,25 @@ def fetch_keys(plain, enc, alphabet):
 
 
 def main():
-    plain, enc = input('Plain text: '), input('Encrypted text: ')
-    alphabet = 'abcdefghijklmnopqrstuvwxyz ?.,;'
 
-    start_time = time.time()
+    parser=argparse.ArgumentParser(description="Plaintext Cryptanalysis of Hill Cipher")
+    parser.add_argument('-p','--planetext',
+                        help="For input paste string or path for the file"
+                        "",required=True)
+    parser.add_argument('-c', '--ciphertext',
+                        help="For input paste string or path for the file"
+                        "",required=True)
+    args = parser.parse_args()
+
+    plain, enc = args.planetext, args.ciphertext
+    alphabet = 'abcdefghijklmnopqrstuvwxyz ?.,;'
+    #alphabet = ' abcdefghijklmnopqrstuvwxyz?.,;'
+
+    #start_time = time.time()
     keys = fetch_keys(plain, enc, alphabet)
-    time_spent = time.time()-start_time
-    print(f'Spent {time_spent} and found {len(keys)} keys: {keys}')
+    #time_spent = time.time()-start_time
+    #print(f'Spent {time_spent} ')
+    print(f'Probable keys: {keys}')
 
     if len(keys) > 0:
         max_score = 0

@@ -8,4 +8,4 @@
 \contentsline {subsection}{\numberline {3.2}Рекуррентный шифр Хилла}{2}{subsection.3.2}%
 \contentsline {section}{\numberline {4}Программная реализация шифров}{3}{section.4}%
 \contentsline {section}{\numberline {5}Примеры криптоанализа}{3}{section.5}%
-\contentsline {section}{\numberline {6}Выводы о проделанной работе}{3}{section.6}%
+\contentsline {section}{\numberline {6}Выводы о проделанной работе}{4}{section.6}%

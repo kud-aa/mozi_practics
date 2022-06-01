@@ -156,7 +156,8 @@ def main():
                         "",required=True)
     args = parser.parse_args()
 
-    alphabet = 'abcdefghijklmnopqrstuvwxyz ?.,;'
+    alphabet = 'abcdefghijklmnopqrstuvwxyz ?.'
+    #alphabet = ' abcdefghijklmnopqrstuvwxyz?.,;'
 
     try:
         with open(args.input) as file:
